@@ -1,5 +1,5 @@
 
-/*!
+/**
  * PickJS
  *
  * Entirely inspired by jQuery - https://jquery.com 
@@ -7,6 +7,10 @@
  * @version 2016.1
  * @author David Esperalta <info@davidesperalta.com>
  * @copyright (c) 2016 David Esperalta - https://davidesperalta.com
+ */
+ 
+ /*!
+ * PickJS by David Esperalta - https://davidesperalta.com
  */
 
 "use strict";
