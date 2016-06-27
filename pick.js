@@ -163,7 +163,7 @@
         alert(Pick('#myIdentifier').getAttr('title'));
         
         The method allow to specify a default value to be returned if
-        the required attribute are not found in the element:
+        any elements are found:
         
         alert(Pick('#myIdentifier').getAttr('title', 'No title!'));        
       */
@@ -202,6 +202,72 @@
           element.removeAttribute(name);
         });
       },
+
+      /*
+        The "getText" method allow us to retrieve the node plain text of
+        the first matched element, if any.
+        
+        alert(Pick('#myIdentifier').getText());
+        
+        The method allow to specify a default value to be returned if
+        the element is not found:
+        
+        alert(Pick('#myIdentifier').getText('No text!'));        
+      */      
+      getText: function(value) {
+        if (this._query()._stack.length > 0) {
+          return this._stack[0].innerText;
+        } else {
+          return value;
+        }        
+      },
+      
+      /*
+        The "setText" method allow us to write code like the below one:
+        
+        Pick('.myClass').setText('My new text content!');
+        
+        So the above code set the plain text to "My new text content!"
+        for all the matched elements with the used selector.
+      */      
+      setText: function(value) {
+        return this._each(function(element) {
+          element.innerText = value;
+        });
+      },      
+      
+      /*
+        The "getText" method allow us to retrieve the node HTML text of
+        the first matched element, if any.
+        
+        alert(Pick('#myIdentifier').getHtml());
+        
+        The method allow to specify a default value to be returned if
+        the element is not found:
+        
+        alert(Pick('#myIdentifier').getHtml('No HTML!'));        
+      */        
+      getHtml: function(value) {
+        if (this._query()._stack.length > 0) {
+          return this._stack[0].innerHTML;
+        } else {
+          return value;
+        }        
+      },
+      
+      /*
+        The "setHtml" method allow us to write code like the below one:
+        
+        Pick('.myClass').setHtml('My new <strong>HTML</strong> content!');
+        
+        So the above code set the HTML "My new <strong>HTML</strong> 
+        content!" for all the matched elements with the used selector.
+      */            
+      setHtml: function(value) {
+        return this._each(function(element) {
+          element.innerHTML = value;
+        });
+      },            
       
       /* ============= */      
       /* Private stuff */
