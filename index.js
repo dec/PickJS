@@ -2,10 +2,9 @@
 Pick(function() {
 
   var clickHandler = function() {
-    
-    alert('I will do the job!');
-    
+
     Pick(this)
+      .setText('Good job!')
       .setCss('font-size', '20px')
       .setAttr('title', 'No more clicks allowed!')
       .off('click', clickHandler);      
