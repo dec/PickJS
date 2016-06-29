@@ -4,7 +4,7 @@
  *
  * Entirely inspired by jQuery - https://jquery.com 
  *
- * @version 2016.1
+ * @version 2016.2
  * @author David Esperalta <info@davidesperalta.com>
  * @copyright (c) 2016 David Esperalta - https://davidesperalta.com
  */
@@ -15,18 +15,18 @@
 
 "use strict";
 
-(function(window) {
+(function(window, undef) {
   
   /* 
     The selector argument can be one of these things:
     
-    1บ A CSS selector string like in: Pick('.myClass')
+    1ยบ A CSS selector string like in: Pick('.myClass')
     
-    2บ An HTML element object like in: Pick(document.getElementById('myId'))     
+    2ยบ An HTML element object like in: Pick(document.getElementById('myId'))     
     
-    3บ A DOM object like in: Pick(window) or Pick(window.document)
+    3ยบ A DOM object like in: Pick(window) or Pick(window.document)
     
-    4บ A callback function like in: Pick(function() {});
+    4ยบ A callback function like in: Pick(function() {});
     
     In the first three cases we can then act over the matches like in:
     
@@ -121,153 +121,102 @@
       },        
       
       /*
-        The "getCss" method retrieve for us the specified CSS rule from
-        the first matched element, if any. So we can write code like this:
+        The "css" method allow us to set a CSS property value or
+        to retrieve the specified CSS property value from the first
+        matched object.
         
-        alert(Pick('#myIdentifier').getCss('color'));
-
-        We can provide a default value for the case than the CSS rule are 
-        not defined, then the default value is returned instead:
+        The first case of use is the below one:
         
-        alert(Pick('#myIdentifier').getCss('color', 'red'));
+        Pick('.myClass').css('color', 'red');
+        
+        The second case of use is the below one:
+        
+        alert(Pick('#myIdentifier').css('color'));
       */
-      getCss: function(name, value) {
-        if ((this._query()._stack.length > 0) && this._stack[0].style[name]) {
-          return this._stack[0].style[name];
-        } else {
-          return value;
+      css: function(name, value) {
+        if ((name !== undef) && (value !== undef)) {
+          return this._each(function(element) {
+            element.style[name] = value;  
+          });                
+        } else if (name !== undef) {
+          if ((this._query()._stack.length > 0) && this._stack[0].style[name]) {
+            return this._stack[0].style[name];
+          }      
         }
       },            
       
       /*
-        The "setCss" method is the counter part of "getCss" and allow us to
-        write code like the below to establish CSS properties to the matched
-        elements:
+        The "attr" method allow us to set an HTML element or DOM object 
+        attribute value or to retrieve the specified attribute value from 
+        the first matched object.
         
-        Pick('.myClass')
-          .setCss('color', 'red')
-          .setCss('background-color', 'white');
-          
-        Note that most of Pick methods are "chainables"!
+        The first case of use is the below one:
+        
+        Pick('.myClass').attr('title', 'My new title!');
+        
+        The second case of use is the below one:
+        
+        alert(Pick('#myIdentifier').attr('title'));      
       */
-      setCss: function(name, value) {
-        return this._each(function(element) {
-          element.style[name] = value;  
-        });
-      },                  
-      
-      /*
-        The "getAttr" method allow us to retrieve the value of the
-        specified HTML attribute of the first matched element, if any.
-        
-        alert(Pick('#myIdentifier').getAttr('title'));
-        
-        The method allow to specify a default value to be returned if
-        any elements are found:
-        
-        alert(Pick('#myIdentifier').getAttr('title', 'No title!'));        
-      */
-      getAttr: function(name, value) {
-        if (this._query()._stack.length > 0) {
-          return this._stack[0].getAttribute(name);
-        } else {
-          return value;
+      attr: function(name, value) {
+        if ((name !== undef) && (value !== undef)) {
+          return this._each(function(element) {
+            element.setAttribute(name, value);
+          });        
+        } else if (name !== undef) {
+          if (this._query()._stack.length > 0) {
+            return this._stack[0].getAttribute(name);
+          }
         }
       },
       
       /*
-        The "setAttr" method allow us to write code like the below one:
+        The "text" method allow us to set an HTML element plain text or 
+        to retrieve the plain text from the first matched object.
         
-        Pick('.myClass').setAttr('title', 'My new title!');
+        The first case of use is the below one:
         
-        So the above code set the "title" attribute to "My new title!"
-        for all the matched elements with the used selector.
+        Pick('.myClass').text('My new text!');
+        
+        The second case of use is the below one:
+        
+        alert(Pick('#myIdentifier').text());      
       */
-      setAttr: function(name, value) {
-        return this._each(function(element) {
-          element.setAttribute(name, value);
-        });
+      text: function(value) {
+        if (value !== undef) {
+          return this._each(function(element) {
+            element.innerText = value;
+          });                
+        } else {
+          if (this._query()._stack.length > 0) {
+            return this._stack[0].innerText;
+          }
+        }      
       },
       
       /*
-        The "delAttr" method allow us to remove an existing HTML attribute
-        from all the matched elements with the used selector:
+        The "html" method allow us to set an HTML element HTML contents 
+        or  to retrieve the HTML contents from the first matched object.
         
-        Pick('.myClass').delAttr('title');
+        The first case of use is the below one:
         
-        The above code remove the "title" attribute from all matched elements.
+        Pick('.myClass').html('My <strong>new</strong> text!');
+        
+        The second case of use is the below one:
+        
+        alert(Pick('#myIdentifier').html());      
       */
-      delAttr: function(name) {
-        return this._each(function(element) {
-          element.removeAttribute(name);
-        });
-      },
-
-      /*
-        The "getText" method allow us to retrieve the node plain text of
-        the first matched element, if any.
-        
-        alert(Pick('#myIdentifier').getText());
-        
-        The method allow to specify a default value to be returned if
-        the element is not found:
-        
-        alert(Pick('#myIdentifier').getText('No text!'));        
-      */      
-      getText: function(value) {
-        if (this._query()._stack.length > 0) {
-          return this._stack[0].innerText;
+      html: function(value) {
+        if (value !== undef) {
+          return this._each(function(element) {
+            element.innerHTML = value;
+          });        
         } else {
-          return value;
-        }        
+          if (this._query()._stack.length > 0) {
+            return this._stack[0].innerHTML;
+          }
+        }      
       },
-      
-      /*
-        The "setText" method allow us to write code like the below one:
-        
-        Pick('.myClass').setText('My new text content!');
-        
-        So the above code set the plain text to "My new text content!"
-        for all the matched elements with the used selector.
-      */      
-      setText: function(value) {
-        return this._each(function(element) {
-          element.innerText = value;
-        });
-      },      
-      
-      /*
-        The "getText" method allow us to retrieve the node HTML text of
-        the first matched element, if any.
-        
-        alert(Pick('#myIdentifier').getHtml());
-        
-        The method allow to specify a default value to be returned if
-        the element is not found:
-        
-        alert(Pick('#myIdentifier').getHtml('No HTML!'));        
-      */        
-      getHtml: function(value) {
-        if (this._query()._stack.length > 0) {
-          return this._stack[0].innerHTML;
-        } else {
-          return value;
-        }        
-      },
-      
-      /*
-        The "setHtml" method allow us to write code like the below one:
-        
-        Pick('.myClass').setHtml('My new <strong>HTML</strong> content!');
-        
-        So the above code set the HTML "My new <strong>HTML</strong> 
-        content!" for all the matched elements with the used selector.
-      */            
-      setHtml: function(value) {
-        return this._each(function(element) {
-          element.innerHTML = value;
-        });
-      },            
       
       /* ============= */      
       /* Private stuff */
